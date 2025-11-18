@@ -18,16 +18,14 @@ export default {
   assetBundlePatterns: ["**/*"],
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.brillprime.app",
-    googleServicesFile: "./ios/GoogleService-Info.plist"
+    bundleIdentifier: "com.brillprime.app"
   },
   android: {
     adaptiveIcon: {
       foregroundImage: "./assets/images/logo.png",
       backgroundColor: "#ffffff"
     },
-    package: "com.brillprime.app",
-    googleServicesFile: "./android/app/google-services.json"
+    package: "com.brillprime.app"
   },
   web: {
     bundler: "metro",

@@ -10,7 +10,7 @@ interface LocationPoint {
 export class MapOptimizer {
   // Debounce map region changes to reduce API calls
   static debounceRegionChange(callback: Function, delay: number = 300) {
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: ReturnType<typeof setTimeout>;
     
     return function(this: any, ...args: any[]) {
       clearTimeout(timeoutId);
@@ -175,6 +175,8 @@ export class MapOptimizer {
 }
 
 // Hook for optimized map usage
+import React from 'react';
+
 export const useMapOptimization = () => {
   const debouncedRegionChange = React.useCallback(
     MapOptimizer.debounceRegionChange((region: any, callback: Function) => {
