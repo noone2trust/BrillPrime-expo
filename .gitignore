@@ -44,3 +44,15 @@ next-env.d.ts
 
 expo-env.d.ts
 # @end expo-cli
+
+# Firebase
+firebase-service-account.json
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+firestore-debug.log
+ui-debug.log
+
+# Supabase
+.branches/
+.temp/

@@ -84,34 +84,34 @@ class CartService {
   async getCartItems(): Promise<ApiResponse<CartItem[]>> {
     try {
       const token = await this.getFreshToken();
-      
-      if (token) {
-        // Try backend first
-        const response = await apiClient.get<any>('/functions/v1/cart-get', { 
-          Authorization: `Bearer ${token}` 
-        });
-
-        if (response.success && response.data?.data) {
-          // Transform backend data to CartItem format
-          const cartItems: CartItem[] = response.data.data.map((item: any) => ({
-            id: item.id,
-            commodityId: item.product_id,
-            commodityName: item.products?.name || 'Unknown',
-            merchantId: item.products?.merchant?.id || '',
-            merchantName: item.products?.merchant?.business_name || 'Unknown',
-            price: item.products?.price || 0,
-            quantity: item.quantity,
-            unit: 'unit',
-            category: 'product',
-            image: item.products?.image_url
-          }));
-
-          // Update local storage
-          await AsyncStorage.setItem(this.CART_STORAGE_KEY, JSON.stringify(cartItems));
-          return { success: true, data: cartItems };
-        }
+      // Minimal fix: If no valid token, return error and do not attempt backend or local fallback
+      if (!token) {
+        return { success: false, error: 'User not authenticated. Please log in.' };
       }
+      // Try backend first
+      const response = await apiClient.get<any>('/functions/v1/cart-get', { 
+        Authorization: `Bearer ${token}` 
+      });
 
+      if (response.success && response.data?.data) {
+        // Transform backend data to CartItem format
+        const cartItems: CartItem[] = response.data.data.map((item: any) => ({
+          id: item.id,
+          commodityId: item.product_id,
+          commodityName: item.products?.name || 'Unknown',
+          merchantId: item.products?.merchant?.id || '',
+          merchantName: item.products?.merchant?.business_name || 'Unknown',
+          price: item.products?.price || 0,
+          quantity: item.quantity,
+          unit: 'unit',
+          category: 'product',
+          image: item.products?.image_url
+        }));
+
+        // Update local storage
+        await AsyncStorage.setItem(this.CART_STORAGE_KEY, JSON.stringify(cartItems));
+        return { success: true, data: cartItems };
+      }
       // Fallback to local storage
       const localCart = await AsyncStorage.getItem(this.CART_STORAGE_KEY);
       const localItems: CartItem[] = localCart ? JSON.parse(localCart) : [];
